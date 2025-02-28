@@ -1,0 +1,152 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+// Function to get the player's name
+void getPlayerName(string &player) {
+    cout << "Enter your name: ";
+    cin >> player;
+}
+
+// Function to roll a die (returns a random number between 1 and 6)
+int rollDie() {
+    return rand() % 6 + 1;
+}
+
+// Function to determine the winner of each round
+void determineWinner(const string &player, int &playerScore, int &computerScore, int &playerStreak, int &computerStreak, int &roundCounter, int &prevPlayerRoll, int &prevComputerRoll) {
+    int playerRoll = rollDie();
+    int computerRoll = rollDie();
+    cout << player << " rolled: " << playerRoll << endl;
+    cout << "Computer rolled: " << computerRoll << endl;
+
+    // Apply bonus rolls if 6 is rolled
+    if (playerRoll == 6) {
+        playerRoll += rollDie();
+        cout << player << " gets a bonus roll!" << endl;
+    }
+    if (computerRoll == 6) {
+        computerRoll += rollDie();
+        cout << "Computer gets a bonus roll!" << endl;
+    }
+
+    // Apply penalty if 1 is rolled
+    if (playerRoll == 1) {
+        cout << player << " loses the next turn!" << endl;
+    }
+    if (computerRoll == 1) {
+        cout << "Computer loses the next turn!" << endl;
+    }
+
+    // Check for double rolls and award extra points
+    if (playerRoll == prevPlayerRoll) {
+        playerScore++;
+        cout << player << " rolled the same number twice and gains an extra point!" << endl;
+    }
+    if (computerRoll == prevComputerRoll) {
+        computerScore++;
+        cout << "Computer rolled the same number twice and gains an extra point!" << endl;
+    }
+
+    // Store the previous rolls
+    prevPlayerRoll = playerRoll;
+    prevComputerRoll = computerRoll;
+
+    // Determine who wins the round
+    if (playerRoll > computerRoll) {
+        playerScore++;
+        playerStreak++;
+        computerStreak = 0;
+        cout << player << " wins this round!" << endl;
+    } else if (computerRoll > playerRoll) {
+        computerScore++;
+        computerStreak++;
+        playerStreak = 0;
+        cout << "Computer wins this round!" << endl;
+    } else {
+        cout << "It's a tie this round!" << endl;
+    }
+
+    // Special challenge round every 3rd round
+    roundCounter++;
+    if (roundCounter % 3 == 0) {
+        cout << "Special Challenge Round!" << endl;
+        cout << "Guess your roll (1-6): ";
+        int guess;
+        cin >> guess;
+        int actualRoll = rollDie();
+        cout << "Actual roll: " << actualRoll << endl;
+        if (guess == actualRoll) {
+            playerScore++;
+            cout << player << " guessed correctly and earns an extra point!" << endl;
+        }
+    }
+
+    // Print the current score
+    cout << "Current score: " << player << ": " << playerScore << " - Computer: " << computerScore << endl;
+}
+
+// Function to display the overall winner
+void displayOverallWinner(const string &player, int playerScore, int computerScore) {
+    cout << "Final score: " << player << ": " << playerScore << " - Computer: " << computerScore << endl;
+    if (playerScore > computerScore) {
+        cout << player << " is the overall winner!" << endl;
+    } else if (computerScore > playerScore) {
+        cout << "Computer is the overall winner!" << endl;
+    } else {
+        cout << "It's a tie overall!" << endl;
+    }
+}
+
+// Main program
+int main() {
+    srand(time(0)); // Seed the random number generator
+
+    string player;
+    int playerScore = 0, computerScore = 0;
+    int playerStreak = 0, computerStreak = 0;
+    int rollLimit = 10, gameMode, roundCount = 0;
+    int prevPlayerRoll = 0, prevComputerRoll = 0;
+
+    // Get player's name
+    getPlayerName(player);
+
+    // Select game mode
+    cout << "Select Game Mode:" << endl;
+    cout << "1. Survival Mode (First to 10 points wins)" << endl;
+    cout << "2. Time Attack (Limited rolls, highest score wins)" << endl;
+    cout << "3. Knockout Mode (Win 3 rounds in a row to win)" << endl;
+    cout << "4. Exit the game." << endl;
+    cout << "Enter choice: ";
+    cin >> gameMode;
+
+    // Exit if user selects Exit
+    if (gameMode == 4) {
+        cout << "Exiting the game. Goodbye!" << endl;
+        return 0;
+    }
+
+    // If Time Attack mode, prompt for number of rounds
+    if (gameMode == 2) {
+        cout << "Enter the number of rounds for Time Attack Mode: ";
+        cin >> rollLimit;
+    }
+
+    // Main game loop
+    while (true) {
+        determineWinner(player, playerScore, computerScore, playerStreak, computerStreak, roundCount, prevPlayerRoll, prevComputerRoll);
+
+        // Check for game end conditions
+        if ((gameMode == 1 && (playerScore >= 10 || computerScore >= 10)) || 
+            (gameMode == 2 && roundCount >= rollLimit) || 
+            (gameMode == 3 && (playerStreak == 3 || computerStreak == 3))) {
+            break;
+        }
+    }
+
+    // Display the final result
+    displayOverallWinner(player, playerScore, computerScore);
+
+    return 0;
+}
