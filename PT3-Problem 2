@@ -1,0 +1,32 @@
+#include <iostream>
+#include <cctype>
+
+using namespace std;
+
+bool isVowel(char ch) {
+    
+    ch = tolower(ch); 
+    return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+}
+
+int main() {
+    char ch;
+    
+    cout << "Enter a character: ";
+    cin >> ch;
+    
+    if (isupper(ch)) {
+        cout << ch << " is an uppercase letter." << endl;
+    } else if (islower(ch)) {
+        cout << ch << " is a lowercase letter." << endl;
+        if (isVowel(ch)) {
+            cout << "It is also a vowel." << endl;
+        } else {
+            cout << "It is also a consonant." << endl;
+        }
+    } else {
+        cout << ch << " is not a letter." << endl;
+    }
+    
+    return 0;
+}
