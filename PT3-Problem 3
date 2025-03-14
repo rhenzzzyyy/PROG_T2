@@ -1,0 +1,27 @@
+#include <iostream>
+#include <cctype>
+
+using namespace std;
+
+int main() {
+    string input;
+    
+    cout << "Enter string: ";
+    getline(cin, input);
+    
+    for (char &ch : input) {
+        if (isdigit(ch)) {
+            ch = '*'; 
+        } else if (isalpha(ch)) {
+            if (islower(ch)) {
+                ch = toupper(ch); 
+            } else {
+                ch = tolower(ch); 
+            }
+        }    
+    }
+    
+    cout << "Modified string: " << input << endl;
+    
+    return 0;
+}
