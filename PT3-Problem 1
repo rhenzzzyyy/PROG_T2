@@ -1,0 +1,34 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string sentence, wordTofind, replacementword;
+
+    cout << "Enter a sentence: ";
+    getline(cin, sentence);
+
+    cout << "Enter the word to find: ";
+    cin >> wordTofind;
+
+    cout << "Enter the replacement word: ";
+    cin >> replacementword;
+
+    size_t position = sentence.find(wordTofind);
+
+    if (position != string::npos) {
+
+        while (position != string::npos) {
+            sentence.replace(position, wordTofind.length(), replacementword);
+            position = sentence.find(wordTofind, position + replacementword.length()); 
+        }
+
+        cout << "Update the new sentence: " << sentence << endl;
+    } else {
+        cout << "Word not found in the sentence." << endl;
+    }
+
+    return 0;
+}
+
